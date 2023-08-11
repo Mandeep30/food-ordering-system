@@ -57,6 +57,7 @@ public class Order extends AggregateRoot<OrderId> {
         if (orderStatus != OrderStatus.PENDING) {
             throw new OrderDomainException("Order is not in correct state for initCancel");
         }
+        orderStatus = OrderStatus.CANCELLING;
         updateErrorMessages(errorMessages);
     }
 
@@ -64,6 +65,7 @@ public class Order extends AggregateRoot<OrderId> {
         if (orderStatus != OrderStatus.PENDING && orderStatus != OrderStatus.CANCELLING) {
             throw new OrderDomainException("Order is not in correct state for cancel");
         }
+        orderStatus = OrderStatus.CANCELLED;
         updateErrorMessages(errorMessages);
     }
 

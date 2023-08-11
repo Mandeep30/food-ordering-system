@@ -1,7 +1,6 @@
 package com.neonex.domain;
 
 import com.neonex.domain.entity.Order;
-import com.neonex.domain.entity.Product;
 import com.neonex.domain.entity.Restaurant;
 import com.neonex.domain.event.OrderCancelledEvent;
 import com.neonex.domain.event.OrderCreatedEvent;
@@ -13,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Slf4j
-class OrderDomainServiceImpl implements OrderDomainService {
+public class OrderDomainServiceImpl implements OrderDomainService {
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
         restaurant.validateRestaurant();
@@ -53,9 +52,10 @@ class OrderDomainServiceImpl implements OrderDomainService {
     //confirm that the order's line item's product name and price match what is fetched from the restaurant service from DB
     private void setOrderProductInformation(Order order, Restaurant restaurant) {
         order.getItems().forEach(item -> restaurant.getProducts().forEach(restaurantProduct -> {
-            Product currentOrderLineItemProduct = item.getProduct();
+            var currentOrderLineItemProduct = item.getProduct();
             if (currentOrderLineItemProduct.equals(restaurantProduct)) {
-                currentOrderLineItemProduct.updateWithConfirmedNameAndPrice(restaurantProduct.getName(), restaurantProduct.getPrice());
+                currentOrderLineItemProduct.updateWithConfirmedNameAndPrice(restaurantProduct.getName(),
+                        restaurantProduct.getPrice());
             }
         }));
     }

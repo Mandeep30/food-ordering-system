@@ -13,26 +13,50 @@
 
     <properties>
     </properties>
-<dependencies>
-    <dependency>
-        <groupId>com.neonex</groupId>
-        <artifactId>order-domain-core</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.neonex</groupId>
-        <artifactId>order-application-service</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.neonex</groupId>
-        <artifactId>order-application</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.neonex</groupId>
-        <artifactId>order-data-access</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.neonex</groupId>
-        <artifactId>order-messaging</artifactId>
-    </dependency>
-</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>order-domain-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>order-application-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>order-application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>order-data-access</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>order-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <configuration>
+                    <repository>order-service</repository>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

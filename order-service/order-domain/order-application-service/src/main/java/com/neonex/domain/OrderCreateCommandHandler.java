@@ -28,10 +28,12 @@ class OrderCreateCommandHandler {
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
         var orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
         log.info("Order is created with id " + orderCreatedEvent.getOrder().getId().id());
-        //publish event only after the commit of the order in persistence store
+        //publish event only after the commit of the order in DB
         //another option is to use @TransactionalEventListener
         //and not to split the code of persist(using helper) and publish events
+        //TransactionalEventListener annotation listens an event that is fired from a transactional method.
+        //And it only processes the event if the transactional operation is completed successfully
         paymentRequestMessagePublisher.publish(orderCreatedEvent);
-        return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder());
+        return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder(), "Order created successfully");
     }
 }

@@ -18,5 +18,17 @@
             <groupId>com.neonex</groupId>
             <artifactId>order-application-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>kafka-consumer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>kafka-producer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>kafka-model</artifactId>
+        </dependency>
     </dependencies>
 </project>

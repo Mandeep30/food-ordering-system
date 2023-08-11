@@ -2,6 +2,7 @@ package com.neonex.domain.mapper;
 
 import com.neonex.domain.dto.create.CreateOrderCommand;
 import com.neonex.domain.dto.create.CreateOrderResponse;
+import com.neonex.domain.dto.track.TrackOrderResponse;
 import com.neonex.domain.entity.Order;
 import com.neonex.domain.entity.OrderItem;
 import com.neonex.domain.entity.Product;
@@ -47,10 +48,21 @@ public class OrderDataMapper {
                 .build();
     }
 
-    public CreateOrderResponse orderToCreateOrderResponse(Order order) {
+    public CreateOrderResponse orderToCreateOrderResponse(Order order, String message) {
         return CreateOrderResponse.builder()
                 .orderTrackingId(order.getTrackingId().id())
                 .orderStatus(order.getOrderStatus())
+                .message(message)
                 .build();
+    }
+
+    public TrackOrderResponse orderToTrackOrderResponse(Order order) {
+        return TrackOrderResponse
+                .builder()
+                .orderTrackingId(order.getTrackingId().id())
+                .orderStatus(order.getOrderStatus())
+                .failureMessage(order.getFailureMessages())
+                .build();
+
     }
 }

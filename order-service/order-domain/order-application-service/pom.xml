@@ -31,6 +31,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.neonex</groupId>
+            <artifactId>saga</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
