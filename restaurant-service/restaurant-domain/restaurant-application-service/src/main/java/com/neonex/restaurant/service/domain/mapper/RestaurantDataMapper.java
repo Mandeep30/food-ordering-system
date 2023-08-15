@@ -8,6 +8,8 @@ import com.neonex.restaurant.service.domain.dto.RestaurantApprovalRequest;
 import com.neonex.restaurant.service.domain.entity.OrderDetail;
 import com.neonex.restaurant.service.domain.entity.Product;
 import com.neonex.restaurant.service.domain.entity.Restaurant;
+import com.neonex.restaurant.service.domain.event.OrderApprovalEvent;
+import com.neonex.restaurant.service.domain.outbox.model.OrderEventPayload;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -30,6 +32,17 @@ public class RestaurantDataMapper {
                         .totalAmount(new Money(restaurantApprovalRequest.getPrice()))
                         .orderStatus(OrderStatus.valueOf(restaurantApprovalRequest.getRestaurantOrderStatus().name()))
                         .build())
+                .build();
+    }
+
+    public OrderEventPayload
+    orderApprovalEventToOrderEventPayload(OrderApprovalEvent orderApprovalEvent) {
+        return OrderEventPayload.builder()
+                .orderId(orderApprovalEvent.getOrderApproval().getOrderId().id().toString())
+                .restaurantId(orderApprovalEvent.getRestaurantId().id().toString())
+                .orderApprovalStatus(orderApprovalEvent.getOrderApproval().getApprovalStatus().name())
+                .createdAt(orderApprovalEvent.getCreatedAt())
+                .failureMessages(orderApprovalEvent.getFailureMessages())
                 .build();
     }
 }

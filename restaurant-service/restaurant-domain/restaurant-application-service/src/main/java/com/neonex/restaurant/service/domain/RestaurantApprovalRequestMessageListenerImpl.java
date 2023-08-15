@@ -5,8 +5,6 @@ import com.neonex.restaurant.service.domain.event.OrderApprovalEvent;
 import com.neonex.restaurant.service.domain.event.OrderApprovedEvent;
 import com.neonex.restaurant.service.domain.event.OrderRejectedEvent;
 import com.neonex.restaurant.service.domain.ports.input.message.listener.RestaurantApprovalRequestMessageListener;
-import com.neonex.restaurant.service.domain.ports.output.message.publisher.OrderApprovedMessagePublisher;
-import com.neonex.restaurant.service.domain.ports.output.message.publisher.OrderRejectedMessagePublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,30 +14,14 @@ public class RestaurantApprovalRequestMessageListenerImpl implements RestaurantA
 
     private final RestaurantApprovalRequestHelper restaurantApprovalRequestHelper;
 
-    private final OrderApprovedMessagePublisher orderApprovedMessagePublisher;
-    private final OrderRejectedMessagePublisher orderRejectedMessagePublisher;
-
     public RestaurantApprovalRequestMessageListenerImpl(RestaurantApprovalRequestHelper
-                                                                restaurantApprovalRequestHelper,
-                                                        OrderApprovedMessagePublisher orderApprovedMessagePublisher,
-                                                        OrderRejectedMessagePublisher orderRejectedMessagePublisher) {
+                                                                restaurantApprovalRequestHelper) {
         this.restaurantApprovalRequestHelper = restaurantApprovalRequestHelper;
-        this.orderApprovedMessagePublisher = orderApprovedMessagePublisher;
-        this.orderRejectedMessagePublisher = orderRejectedMessagePublisher;
     }
 
     @Override
     public void approveOrder(RestaurantApprovalRequest restaurantApprovalRequest) {
-        OrderApprovalEvent orderApprovalEvent =
-                restaurantApprovalRequestHelper.persistOrderApproval(restaurantApprovalRequest);
-        fireEvent(orderApprovalEvent);
-    }
 
-    private void fireEvent(OrderApprovalEvent orderApprovalEvent) {
-        if (orderApprovalEvent instanceof OrderApprovedEvent event) {
-            orderApprovedMessagePublisher.publish(event);
-        } else if (orderApprovalEvent instanceof OrderRejectedEvent event) {
-            orderRejectedMessagePublisher.publish(event);
-        }
+        restaurantApprovalRequestHelper.persistOrderApproval(restaurantApprovalRequest);
     }
 }

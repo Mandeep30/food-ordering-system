@@ -5,6 +5,8 @@ import com.neonex.domain.entity.Order;
 import com.neonex.domain.exception.OrderNotFoundException;
 import com.neonex.domain.port.output.repository.OrderRepository;
 import com.neonex.domain.valueobject.OrderId;
+import com.neonex.domain.valueobject.OrderStatus;
+import com.neonex.saga.SagaStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -32,5 +34,16 @@ public class OrderSagaHelper {
 
     void saveOrder(Order order) {
         orderRepository.save(order);
+    }
+
+    SagaStatus orderStatusToSagaStatus(OrderStatus orderStatus) {
+        return switch (orderStatus) {
+            case PENDING -> SagaStatus.STARTED;
+            case PAID -> SagaStatus.PROCESSING;
+            case APPROVED -> SagaStatus.SUCCEEDED;
+            case CANCELLING -> SagaStatus.COMPENSATING;
+            case CANCELLED -> SagaStatus.COMPENSATED;
+        };
+
     }
 }

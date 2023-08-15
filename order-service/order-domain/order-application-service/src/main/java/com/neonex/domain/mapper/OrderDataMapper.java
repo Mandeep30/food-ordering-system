@@ -7,14 +7,23 @@ import com.neonex.domain.entity.Order;
 import com.neonex.domain.entity.OrderItem;
 import com.neonex.domain.entity.Product;
 import com.neonex.domain.entity.Restaurant;
+import com.neonex.domain.event.OrderCancelledEvent;
+import com.neonex.domain.event.OrderCreatedEvent;
+import com.neonex.domain.event.OrderPaidEvent;
+import com.neonex.domain.outbox.model.approval.OrderApprovalEventPayload;
+import com.neonex.domain.outbox.model.approval.OrderApprovalEventProduct;
+import com.neonex.domain.outbox.model.payment.OrderPaymentEventPayload;
 import com.neonex.domain.valueobject.CustomerId;
 import com.neonex.domain.valueobject.Money;
+import com.neonex.domain.valueobject.PaymentOrderStatus;
 import com.neonex.domain.valueobject.ProductId;
 import com.neonex.domain.valueobject.RestaurantId;
+import com.neonex.domain.valueobject.RestaurantOrderStatus;
 import com.neonex.domain.valueobject.StreetAddress;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * DTO to domain objects and vice versa
@@ -63,6 +72,41 @@ public class OrderDataMapper {
                 .orderStatus(order.getOrderStatus())
                 .failureMessage(order.getFailureMessages())
                 .build();
+    }
 
+    public OrderPaymentEventPayload orderCreatedEventToOrderPaymentEventPayload(OrderCreatedEvent orderCreatedEvent) {
+        return OrderPaymentEventPayload.builder()
+                .customerId(orderCreatedEvent.getOrder().getCustomerId().id().toString())
+                .orderId(orderCreatedEvent.getOrder().getId().id().toString())
+                .price(orderCreatedEvent.getOrder().getPrice().amount())
+                .createdAt(orderCreatedEvent.getCreatedAt())
+                .paymentOrderStatus(PaymentOrderStatus.PENDING.name())
+                .build();
+    }
+
+    public OrderPaymentEventPayload orderCancelledEventToOrderPaymentEventPayload(OrderCancelledEvent
+                                                                                          orderCancelledEvent) {
+        return OrderPaymentEventPayload.builder()
+                .customerId(orderCancelledEvent.getOrder().getCustomerId().id().toString())
+                .orderId(orderCancelledEvent.getOrder().getId().id().toString())
+                .price(orderCancelledEvent.getOrder().getPrice().amount())
+                .createdAt(orderCancelledEvent.getCreatedAt())
+                .paymentOrderStatus(PaymentOrderStatus.CANCELLED.name())
+                .build();
+    }
+
+    public OrderApprovalEventPayload orderPaidEventToOrderApprovalEventPayload(OrderPaidEvent orderPaidEvent) {
+        return OrderApprovalEventPayload.builder()
+                .orderId(orderPaidEvent.getOrder().getId().id().toString())
+                .restaurantId(orderPaidEvent.getOrder().getRestaurantId().id().toString())
+                .restaurantOrderStatus(RestaurantOrderStatus.PAID.name())
+                .products(orderPaidEvent.getOrder().getItems().stream().map(orderItem ->
+                        OrderApprovalEventProduct.builder()
+                                .id(orderItem.getProduct().getId().id().toString())
+                                .quantity(orderItem.getQuantity())
+                                .build()).collect(Collectors.toList()))
+                .price(orderPaidEvent.getOrder().getPrice().amount())
+                .createdAt(orderPaidEvent.getCreatedAt())
+                .build();
     }
 }

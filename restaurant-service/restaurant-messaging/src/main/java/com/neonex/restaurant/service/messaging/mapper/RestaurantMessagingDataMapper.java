@@ -10,6 +10,7 @@ import com.neonex.restaurant.service.domain.dto.RestaurantApprovalRequest;
 import com.neonex.restaurant.service.domain.entity.Product;
 import com.neonex.restaurant.service.domain.event.OrderApprovedEvent;
 import com.neonex.restaurant.service.domain.event.OrderRejectedEvent;
+import com.neonex.restaurant.service.domain.outbox.model.OrderEventPayload;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -18,30 +19,15 @@ import java.util.stream.Collectors;
 @Component
 public class RestaurantMessagingDataMapper {
     public RestaurantApprovalResponseAvroModel
-    orderApprovedEventToRestaurantApprovalResponseAvroModel(OrderApprovedEvent orderApprovedEvent) {
+    orderEventPayloadToRestaurantApprovalResponseAvroModel(String sagaId, OrderEventPayload orderEventPayload) {
         return RestaurantApprovalResponseAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
-                .setSagaId("")
-                .setOrderId(orderApprovedEvent.getOrderApproval().getOrderId().id().toString())
-                .setRestaurantId(orderApprovedEvent.getRestaurantId().id().toString())
-                .setCreatedAt(orderApprovedEvent.getCreatedAt().toInstant())
-                .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApprovedEvent.
-                        getOrderApproval().getApprovalStatus().name()))
-                .setFailureMessages(orderApprovedEvent.getFailureMessages())
-                .build();
-    }
-
-    public RestaurantApprovalResponseAvroModel
-    orderRejectedEventToRestaurantApprovalResponseAvroModel(OrderRejectedEvent orderRejectedEvent) {
-        return RestaurantApprovalResponseAvroModel.newBuilder()
-                .setId(UUID.randomUUID().toString())
-                .setSagaId("")
-                .setOrderId(orderRejectedEvent.getOrderApproval().getOrderId().id().toString())
-                .setRestaurantId(orderRejectedEvent.getRestaurantId().id().toString())
-                .setCreatedAt(orderRejectedEvent.getCreatedAt().toInstant())
-                .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderRejectedEvent.
-                        getOrderApproval().getApprovalStatus().name()))
-                .setFailureMessages(orderRejectedEvent.getFailureMessages())
+                .setSagaId(sagaId)
+                .setOrderId(orderEventPayload.getOrderId())
+                .setRestaurantId(orderEventPayload.getRestaurantId())
+                .setCreatedAt(orderEventPayload.getCreatedAt().toInstant())
+                .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderEventPayload.getOrderApprovalStatus()))
+                .setFailureMessages(orderEventPayload.getFailureMessages())
                 .build();
     }
 

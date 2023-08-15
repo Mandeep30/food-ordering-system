@@ -32,10 +32,8 @@ public class OrderCreateHelper {
         this.orderDataMapper = orderDataMapper;
     }
 
-    /*
-    this method needs to be public and should be called from another spring-bean to be transactional
-    the transaction is committed when it jumps out the method marked @Transactional
-     */
+    //here it is not mandatory to keep Transactional annotation as it is being called from Transactional method
+    //but even if we use it will use existing transaction by default
     @Transactional
     public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
         var customer = customerRepository.findCustomer(createOrderCommand.getCustomerId());
